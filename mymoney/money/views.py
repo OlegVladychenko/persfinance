@@ -8,7 +8,6 @@ from .models import *
 def index(request):
     return HttpResponse('hi')
 
-
 class DocumentList(ListView):
     template_name = 'money/documents.html'
 
