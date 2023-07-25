@@ -13,5 +13,3 @@ class DocumentList(ListView):
 
     def get_queryset(self, **kwargs):
         return Document.objects.all()
-
-
