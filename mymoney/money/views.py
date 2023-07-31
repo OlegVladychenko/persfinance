@@ -4,9 +4,9 @@ from django.shortcuts import render
 from django.views.generic import ListView, CreateView
 from .models import *
 
-
 def index(request):
-    return HttpResponse('hi')
+    return render(request, 'money/index.html')
+
 
 class DocumentList(ListView):
     template_name = 'money/documents.html'
