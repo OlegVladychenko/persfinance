@@ -2,6 +2,8 @@ from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
 
 from django.views.generic import ListView, CreateView
+
+from .forms import DocumentForm
 from .models import *
 
 def index(request):
@@ -17,4 +19,18 @@ class DocumentList(ListView):
 def show_doc(request, doc_id):
     doc = get_object_or_404(Document, pk=doc_id)
     print(request.method)
-    return render(request, 'money/document.html')
+    if request.method == 'POST':
+        form = DocumentForm(request.POST, instance=doc)
+        if form.is_valid():
+            try:
+                form.save()
+            except:
+                form.add_error(None, 'Ошибка добавления')
+    else:
+        form = DocumentForm(instance=doc)
+
+    context = {
+        'doc_id': doc_id,
+        'form': form,
+    }
+    return render(request, 'money/document.html',context)

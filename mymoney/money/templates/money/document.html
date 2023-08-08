@@ -3,4 +3,19 @@
 
 Документ
 
+
+{{ form }}
+
+<form action="{% url 'show_doc' doc_id %}" method="post">
+    {% csrf_token %}
+
+
+    <div class="form-group col-md-11">
+        <label for="{{ form.sum.id_for_label }}">Сумма</label>
+        {{ form.sum }}
+    </div>
+
+
+
+</form>
 {% endblock%}
