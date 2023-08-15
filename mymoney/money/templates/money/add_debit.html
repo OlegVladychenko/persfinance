@@ -1,0 +1,16 @@
+{% extends 'money/base.html' %}
+{% block content %}
+
+
+
+<form action="{% url 'add_debit_doc' %}" method="post">
+    {% csrf_token %}
+
+     {{ form.as_p}}
+
+
+
+    <button type="submit" class="btn btn-primary mb-3">Сохранить</button>
+
+</form>
+{% endblock%}
