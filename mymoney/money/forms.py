@@ -22,33 +22,57 @@ class DocumentForm(forms.ModelForm):
 
 
 class AddDebitDocForm(forms.Form):
-    date = forms.DateField(widget=DateInput)
-    type = forms.IntegerField()
-    sum = forms.DecimalField()
-
-
+    date = forms.DateField(widget=DateInput(attrs={'class': 'form-control'}), label="Дата")
+    type = forms.IntegerField(required=False)
+    sum = forms.DecimalField(widget=forms.TextInput(attrs={'class': 'form-control'}), label="Сумма")
+    sum_reg = forms.DecimalField(widget=forms.TextInput(attrs={'class': 'form-control'}),required=False)
 
     counterparty = forms.ModelChoiceField(
         label="Контрагент",
         queryset=Сounterparty.objects.all(),
-        required=False,
-        widget=forms.Select
+        widget=forms.Select(attrs={'class': 'form-select'})
     )
 
     category = forms.ModelChoiceField(
         label="Категория",
         queryset=Category.objects.all(),
-        required=False,
-        widget=forms.Select
+        widget=forms.Select(attrs={'class': 'form-select'})
     )
 
     сurrencie = forms.ModelChoiceField(
         label="Валюта",
         queryset=Currencies.objects.all(),
-        required=False,
-        widget=forms.Select
+        widget=forms.Select(attrs={'class': 'form-select'})
     )
 
-    active = forms.BooleanField()
-    comment = forms.CharField(widget=forms.Textarea(attrs={'cols': 10, 'rows': 4, 'class': 'form-control'}),
+    active = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class': 'form-check-input','type':'checkbox'}), label="Ативно", required=False)
+    comment = forms.CharField(widget=forms.Textarea(attrs={'cols': 8, 'rows': 4, 'class': 'form-control'}),
+                              required=False, label="Комментарий")
+
+class AddCreditDocForm(forms.Form):
+    date = forms.DateField(widget=DateInput(attrs={'class': 'form-control'}), label="Дата")
+    type = forms.IntegerField(required=False)
+    sum = forms.DecimalField(widget=forms.TextInput(attrs={'class': 'form-control'}), label="Сумма")
+    sum_reg = forms.DecimalField(widget=forms.TextInput(attrs={'class': 'form-control'}),required=False)
+
+    counterparty = forms.ModelChoiceField(
+        label="Контрагент",
+        queryset=Сounterparty.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
+
+    category = forms.ModelChoiceField(
+        label="Категория",
+        queryset=Category.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
+
+    сurrencie = forms.ModelChoiceField(
+        label="Валюта",
+        queryset=Currencies.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
+
+    active = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class': 'form-check-input','type':'checkbox'}), label="Ативно", required=False)
+    comment = forms.CharField(widget=forms.Textarea(attrs={'cols': 8, 'rows': 4, 'class': 'form-control'}),
                               required=False, label="Комментарий")

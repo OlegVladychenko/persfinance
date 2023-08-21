@@ -4,7 +4,7 @@ from django.urls import reverse_lazy
 
 from django.views.generic import ListView, CreateView
 
-from .forms import DocumentForm, AddDebitDocForm
+from .forms import DocumentForm, AddDebitDocForm, AddCreditDocForm
 from .models import *
 
 
@@ -44,11 +44,13 @@ def add_debit_doc(request):
         form = AddDebitDocForm(request.POST)
         if form.is_valid():
             try:
-                print(form.cleaned_data)
+                form.cleaned_data["type"] = 1
+                form.cleaned_data["sum_reg"] = form.cleaned_data["sum"]
                 Document.objects.create(**form.cleaned_data)
-                return redirect('home')
+                return redirect('docs')
             except Exception as e:
                 form.add_error(None,  str(e))
+                print(str(e))
     else:
         form = AddDebitDocForm()
 
@@ -56,3 +58,23 @@ def add_debit_doc(request):
         'form': form
     }
     return render(request, 'money/add_debit.html', context)
+
+def add_credit_doc(request):
+    if request.method == 'POST':
+        form = AddCreditDocForm(request.POST)
+        if form.is_valid():
+            try:
+                form.cleaned_data["type"] = 2
+                form.cleaned_data["sum_reg"] = form.cleaned_data["sum"]* (-1)
+                Document.objects.create(**form.cleaned_data)
+                return redirect('docs')
+            except Exception as e:
+                form.add_error(None,  str(e))
+                print(str(e))
+    else:
+        form = AddCreditDocForm()
+
+    context = {
+        'form': form
+    }
+    return render(request, 'money/add_credit.html', context)

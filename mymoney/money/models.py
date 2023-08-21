@@ -3,9 +3,10 @@ from django.db import models
 # Create your models here.
 
 class Document(models.Model):
-    type = models.IntegerField()
+    type = models.IntegerField(blank=True, null=True)
     date = models.DateTimeField(auto_now=True)
     sum = models.DecimalField(max_digits=10, decimal_places=2)
+    sum_reg = models.DecimalField(max_digits=10, decimal_places=2)
     counterparty = models.ForeignKey('Сounterparty', on_delete=models.PROTECT, blank=True)
     category = models.ForeignKey('Category', on_delete=models.PROTECT, blank=True)
     сurrencie = models.ForeignKey('Currencies', on_delete=models.PROTECT, blank=True)
