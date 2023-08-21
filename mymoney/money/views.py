@@ -6,6 +6,7 @@ from django.views.generic import ListView, CreateView
 
 from .forms import DocumentForm, AddDebitDocForm, AddCreditDocForm
 from .models import *
+import datetime
 
 
 def index(request):
@@ -53,6 +54,7 @@ def add_debit_doc(request):
                 print(str(e))
     else:
         form = AddDebitDocForm()
+        form.fields["date"].initial = datetime.datetime.now()
 
     context = {
         'form': form
@@ -65,7 +67,7 @@ def add_credit_doc(request):
         if form.is_valid():
             try:
                 form.cleaned_data["type"] = 2
-                form.cleaned_data["sum_reg"] = form.cleaned_data["sum"]* (-1)
+                form.cleaned_data["sum_reg"] = form.cleaned_data["sum"] * (-1)
                 Document.objects.create(**form.cleaned_data)
                 return redirect('docs')
             except Exception as e:
@@ -73,6 +75,7 @@ def add_credit_doc(request):
                 print(str(e))
     else:
         form = AddCreditDocForm()
+        form.fields["date"].initial = datetime.datetime.now()
 
     context = {
         'form': form
