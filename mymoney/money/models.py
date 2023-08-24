@@ -12,6 +12,8 @@ class Document(models.Model):
     сurrencie = models.ForeignKey('Currencies', on_delete=models.PROTECT, blank=True)
     active = models.BooleanField(default=True)
     comment = models.CharField(max_length=255, blank=True)
+    account = models.ForeignKey('MoneyAccount', on_delete=models.PROTECT, blank=True)
+
 
 
 class Сounterparty(models.Model):

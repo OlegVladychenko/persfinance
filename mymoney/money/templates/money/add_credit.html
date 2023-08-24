@@ -15,7 +15,12 @@
         {{ form.active }}
     </div>
 
-      <div class="form-group col-md-1">
+    <div class="form-group col-md-4">
+        <label for="{{ form.account.id_for_label }}">{{form.account.label}}</label>
+        {{ form.account }}
+    </div>
+
+    <div class="form-group col-md-1">
         <label for="{{ form.сurrencie.id_for_label }}">{{form.сurrencie.label}}</label>
         {{ form.сurrencie }}
     </div>

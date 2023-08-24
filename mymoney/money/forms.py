@@ -45,6 +45,12 @@ class AddDebitDocForm(forms.Form):
         widget=forms.Select(attrs={'class': 'form-select'})
     )
 
+    account = forms.ModelChoiceField(
+        label="Счет/Касса",
+        queryset=MoneyAccount.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
+
     active = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class': 'form-check-input','type':'checkbox'}), label="Ативно", required=False)
     comment = forms.CharField(widget=forms.Textarea(attrs={'cols': 8, 'rows': 4, 'class': 'form-control'}),
                               required=False, label="Комментарий")
@@ -72,6 +78,13 @@ class AddCreditDocForm(forms.Form):
         queryset=Currencies.objects.all(),
         widget=forms.Select(attrs={'class': 'form-select'})
     )
+
+    account = forms.ModelChoiceField(
+        label="Счет/Касса",
+        queryset=MoneyAccount.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
+
 
     active = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class': 'form-check-input','type':'checkbox'}), label="Ативно", required=False)
     comment = forms.CharField(widget=forms.Textarea(attrs={'cols': 8, 'rows': 4, 'class': 'form-control'}),
