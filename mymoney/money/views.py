@@ -4,7 +4,7 @@ from django.urls import reverse_lazy
 
 from django.views.generic import ListView, CreateView
 
-from .forms import DocumentForm, AddDebitDocForm, AddCreditDocForm
+from .forms import DocumentForm, DebitDocForm, CreditDocForm
 from .models import *
 import datetime
 
@@ -22,27 +22,59 @@ class DocumentList(ListView):
 
 def show_doc(request, doc_id):
     doc = get_object_or_404(Document, pk=doc_id)
-    print(request.method)
+    doc_type = doc.type
+    is_save = False
     if request.method == 'POST':
-        form = DocumentForm(request.POST, instance=doc)
+        if doc_type == 1:
+            form = DebitDocForm(request.POST)
+
+        elif doc_type == 2:
+            form = CreditDocForm(request.POST)
+
         if form.is_valid():
             try:
-                form.save()
+                doc.date = form.cleaned_data.get('date')
+                doc.sum = form.cleaned_data.get('sum')
+                doc.sum_reg = form.cleaned_data.get('sum') * (-1)
+                doc.counterparty = form.cleaned_data.get('counterparty')
+                doc.category = form.cleaned_data.get('category')
+                doc.сurrencie = form.cleaned_data.get('сurrencie')
+                doc.account = form.cleaned_data.get('account')
+                doc.active = form.cleaned_data.get('active')
+                doc.comment = form.cleaned_data.get('comment')
+
+                doc.save()
+                is_save = True
+                return redirect('docs')
             except:
                 form.add_error(None, 'Ошибка добавления')
     else:
-        form = DocumentForm(instance=doc)
+
+        if doc_type == 1:
+            form = DebitDocForm()
+        elif doc_type == 2:
+            form = CreditDocForm()
+        form.fields["date"].initial = doc.date
+        form.fields["sum"].initial = doc.sum
+        form.fields["sum_reg"].initial = doc.sum_reg
+        form.fields["counterparty"].initial = doc.counterparty
+        form.fields["category"].initial = doc.category
+        form.fields["сurrencie"].initial = doc.сurrencie
+        form.fields["account"].initial = doc.account
+        form.fields["active"].initial = doc.active
+        form.fields["comment"].initial = doc.comment
 
     context = {
         'doc_id': doc_id,
         'form': form,
     }
+
     return render(request, 'money/document.html', context)
 
 
 def add_debit_doc(request):
     if request.method == 'POST':
-        form = AddDebitDocForm(request.POST)
+        form = DebitDocForm(request.POST)
         if form.is_valid():
             try:
                 form.cleaned_data["type"] = 1
@@ -50,10 +82,10 @@ def add_debit_doc(request):
                 Document.objects.create(**form.cleaned_data)
                 return redirect('docs')
             except Exception as e:
-                form.add_error(None,  str(e))
+                form.add_error(None, str(e))
                 print(str(e))
     else:
-        form = AddDebitDocForm()
+        form = DebitDocForm()
         form.fields["date"].initial = datetime.datetime.now()
 
     context = {
@@ -61,9 +93,10 @@ def add_debit_doc(request):
     }
     return render(request, 'money/add_debit.html', context)
 
+
 def add_credit_doc(request):
     if request.method == 'POST':
-        form = AddCreditDocForm(request.POST)
+        form = CreditDocForm(request.POST)
         if form.is_valid():
             try:
                 form.cleaned_data["type"] = 2
@@ -71,10 +104,10 @@ def add_credit_doc(request):
                 Document.objects.create(**form.cleaned_data)
                 return redirect('docs')
             except Exception as e:
-                form.add_error(None,  str(e))
+                form.add_error(None, str(e))
                 print(str(e))
     else:
-        form = AddCreditDocForm()
+        form = CreditDocForm()
         form.fields["date"].initial = datetime.datetime.now()
 
     context = {

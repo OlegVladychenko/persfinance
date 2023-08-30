@@ -10,10 +10,17 @@ class DateInput(forms.DateInput):
 class DocumentForm(forms.ModelForm):
     class Meta:
         model = Document
-        fields = ['id', 'sum', 'counterparty']
+        fields = "__all__"
+        #fields = ['id','date', 'type', 'sum', 'sum_reg', 'counterparty', 'category', 'сurrencie', 'account', 'active', 'comment']
         widgets = {
             'id': forms.TextInput(attrs={'class': 'form-control'}),
-            'sum': forms.TextInput(attrs={'class': 'form-control'}),
+            'type': forms.IntegerField(required=False),
+           # 'counterparty': forms.TextInput(attrs={'class': 'form-control'}),
+            # 'category': forms.TextInput(attrs={'class': 'form-control'}),
+            #'сurrencie': forms.TextInput(attrs={'class': 'form-control'}),
+            #'account': forms.TextInput(attrs={'class': 'form-control'}),
+            #'active': forms.TextInput(attrs={'class': 'form-control'}),
+            #'comment': forms.TextInput(attrs={'class': 'form-control'})
         }
         labels = {
             'id': 'Заголовок',
@@ -21,7 +28,7 @@ class DocumentForm(forms.ModelForm):
         }
 
 
-class AddDebitDocForm(forms.Form):
+class DebitDocForm(forms.Form):
     date = forms.DateField(widget=DateInput(attrs={'class': 'form-control'}), label="Дата")
     type = forms.IntegerField(required=False)
     sum = forms.DecimalField(widget=forms.TextInput(attrs={'class': 'form-control'}), label="Сумма")
@@ -55,7 +62,7 @@ class AddDebitDocForm(forms.Form):
     comment = forms.CharField(widget=forms.Textarea(attrs={'cols': 8, 'rows': 4, 'class': 'form-control'}),
                               required=False, label="Комментарий")
 
-class AddCreditDocForm(forms.Form):
+class CreditDocForm(forms.Form):
     date = forms.DateField(widget=DateInput(attrs={'class': 'form-control'}), label="Дата")
     type = forms.IntegerField(required=False)
     sum = forms.DecimalField(widget=forms.TextInput(attrs={'class': 'form-control'}), label="Сумма")
