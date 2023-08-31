@@ -4,7 +4,7 @@ from django.db import models
 
 class Document(models.Model):
     type = models.IntegerField(blank=True, null=True)
-    date = models.DateTimeField(auto_now=True)
+    date = models.DateTimeField()
     sum = models.DecimalField(max_digits=10, decimal_places=2)
     sum_reg = models.DecimalField(max_digits=10, decimal_places=2)
     counterparty = models.ForeignKey('Сounterparty', on_delete=models.PROTECT, blank=True)

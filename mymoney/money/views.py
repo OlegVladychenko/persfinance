@@ -114,3 +114,12 @@ def add_credit_doc(request):
         'form': form
     }
     return render(request, 'money/add_credit.html', context)
+
+def delete_doc(request, doc_id):
+    try:
+        instance = Document.objects.get(id=doc_id)
+        instance.delete()
+        return redirect('docs')
+    except:
+        print('Ошибка удаления документа')
+    return render(request)
