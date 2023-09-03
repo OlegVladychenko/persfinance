@@ -1,3 +1,4 @@
+from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
@@ -10,7 +11,16 @@ import datetime
 
 
 def index(request):
-    return render(request, 'money/index.html')
+    account_sum_list = Document.objects.all()\
+        .values('account__name','сurrencie__name')\
+        .annotate(Sum('sum_reg'))\
+        .filter(active=True)
+    print(account_sum_list)
+    context = {
+        'data_list': account_sum_list
+    }
+
+    return render(request, 'money/index.html',context)
 
 
 class DocumentList(ListView):
