@@ -1,23 +1,23 @@
 {% extends 'money/base.html' %}
 {% block content %}
-main
+{% load static %}
+
 
 <div class="table-responsive">
     <table class="table table-striped table-sm">
         <thead>
         <tr>
-            <th scope="col">Счет/касса</th>
-            <th scope="col">Валюта</th>
-            <th scope="col">Сумма</th>
+            <th scope="col">ID</th>
+
         </tr>
         </thead>
         <tbody>
 
-        {% for m in data_list %}
+        {% for m in counterparty_list %}
         <tr>
-            <td>{{m.account__name}}</td>
-            <td>{{m.currencie__name}}</td>
-            <td>{{m.sum_reg__sum}}</td>
+
+            <td>{{m.name}}</td>
+
         </tr>
         {% endfor %}
 
@@ -28,7 +28,6 @@ main
 </main>
 </div>
 </div>
-
 
 
 {% endblock%}

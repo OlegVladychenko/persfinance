@@ -1,5 +1,6 @@
 from django.db import models
 
+
 # Create your models here.
 
 class Document(models.Model):
@@ -7,21 +8,22 @@ class Document(models.Model):
     date = models.DateTimeField()
     sum = models.DecimalField(max_digits=10, decimal_places=2)
     sum_reg = models.DecimalField(max_digits=10, decimal_places=2)
-    counterparty = models.ForeignKey('Сounterparty', on_delete=models.PROTECT, blank=True)
+    counterparty = models.ForeignKey('Counterparty', on_delete=models.PROTECT, blank=True)
     category = models.ForeignKey('Category', on_delete=models.PROTECT, blank=True)
-    сurrencie = models.ForeignKey('Currencies', on_delete=models.PROTECT, blank=True)
+    currencie = models.ForeignKey('Currencies', on_delete=models.PROTECT, blank=True)
     active = models.BooleanField(default=True)
     comment = models.CharField(max_length=255, blank=True)
     account = models.ForeignKey('MoneyAccount', on_delete=models.PROTECT, blank=True)
+    sum_reg_val = models.DecimalField(max_digits=10, decimal_places=2)
 
 
-
-class Сounterparty(models.Model):
+class Counterparty(models.Model):
     name = models.CharField(max_length=255)
     comment = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         return self.name
+
 
 class Category(models.Model):
     name = models.CharField(max_length=255)
@@ -29,6 +31,7 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class Currencies(models.Model):
     code = models.CharField(max_length=3, db_index=True, primary_key=True)
@@ -38,12 +41,14 @@ class Currencies(models.Model):
     def __str__(self):
         return self.name
 
+
 class TypeDebit(models.Model):
     name = models.CharField(max_length=255)
     comment = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         return self.name
+
 
 class TypeCredit(models.Model):
     name = models.CharField(max_length=255)
@@ -52,12 +57,18 @@ class TypeCredit(models.Model):
     def __str__(self):
         return self.name
 
+
 class MoneyAccount(models.Model):
     name = models.CharField(max_length=255)
-    type = models.IntegerField() # 0- cash 1- Bank account
-    сurrencie = models.ForeignKey('Currencies', on_delete=models.PROTECT)
+    type = models.IntegerField()  # 0- cash 1- Bank account
+    currencie = models.ForeignKey('Currencies', on_delete=models.PROTECT)
     comment = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         return self.name
 
+class ExchangeRates(models.Model):
+    currencie = models.ForeignKey('Currencies', on_delete=models.PROTECT)
+    date = models.DateField()
+    value = models.DecimalField('value', null=False,max_digits=10, decimal_places=5,default=0)
+    multiplicity = models.IntegerField()

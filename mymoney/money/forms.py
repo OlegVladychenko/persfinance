@@ -11,13 +11,13 @@ class DocumentForm(forms.ModelForm):
     class Meta:
         model = Document
         fields = "__all__"
-        #fields = ['id','date', 'type', 'sum', 'sum_reg', 'counterparty', 'category', 'сurrencie', 'account', 'active', 'comment']
+        #fields = ['id','date', 'type', 'sum', 'sum_reg', 'counterparty', 'category', 'currencie', 'account', 'active', 'comment']
         widgets = {
             'id': forms.TextInput(attrs={'class': 'form-control'}),
             'type': forms.IntegerField(required=False),
            # 'counterparty': forms.TextInput(attrs={'class': 'form-control'}),
             # 'category': forms.TextInput(attrs={'class': 'form-control'}),
-            #'сurrencie': forms.TextInput(attrs={'class': 'form-control'}),
+            #'currencie': forms.TextInput(attrs={'class': 'form-control'}),
             #'account': forms.TextInput(attrs={'class': 'form-control'}),
             #'active': forms.TextInput(attrs={'class': 'form-control'}),
             #'comment': forms.TextInput(attrs={'class': 'form-control'})
@@ -36,7 +36,7 @@ class DebitDocForm(forms.Form):
 
     counterparty = forms.ModelChoiceField(
         label="Контрагент",
-        queryset=Сounterparty.objects.all(),
+        queryset=Counterparty.objects.all(),
         widget=forms.Select(attrs={'class': 'form-select'})
     )
 
@@ -46,7 +46,7 @@ class DebitDocForm(forms.Form):
         widget=forms.Select(attrs={'class': 'form-select'})
     )
 
-    сurrencie = forms.ModelChoiceField(
+    currencie = forms.ModelChoiceField(
         label="Валюта",
         queryset=Currencies.objects.all(),
         widget=forms.Select(attrs={'class': 'form-select'})
@@ -70,7 +70,7 @@ class CreditDocForm(forms.Form):
 
     counterparty = forms.ModelChoiceField(
         label="Контрагент",
-        queryset=Сounterparty.objects.all(),
+        queryset=Counterparty.objects.all(),
         widget=forms.Select(attrs={'class': 'form-select'})
     )
 
@@ -80,7 +80,7 @@ class CreditDocForm(forms.Form):
         widget=forms.Select(attrs={'class': 'form-select'})
     )
 
-    сurrencie = forms.ModelChoiceField(
+    currencie = forms.ModelChoiceField(
         label="Валюта",
         queryset=Currencies.objects.all(),
         widget=forms.Select(attrs={'class': 'form-select'})

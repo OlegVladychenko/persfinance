@@ -1,0 +1,33 @@
+{% extends 'money/base.html' %}
+{% block content %}
+{% load static %}
+
+<div class="table-responsive">
+    <table class="table table-striped table-sm">
+        <thead>
+        <tr>
+            <th scope="col">Наименование</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td> <a href="{% url 'ctr_list' %}">Контрагенты</a></td>
+        </tr>
+        <tr>
+            <td>Валюты</td>
+        </tr>
+        <tr>
+            <td>Категории</td>
+        </tr>
+        <tr>
+            <td>Банковские счета/кассы </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</main>
+</div>
+</div>
+
+
+{% endblock%}

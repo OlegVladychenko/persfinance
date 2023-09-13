@@ -7,20 +7,22 @@ from django.views.generic import ListView, CreateView
 
 from .forms import DocumentForm, DebitDocForm, CreditDocForm
 from .models import *
-import datetime
+from datetime import datetime, timedelta
+from django.utils import timezone
+from .utils import *
 
 
 def index(request):
-    account_sum_list = Document.objects.all()\
-        .values('account__name','сurrencie__name')\
-        .annotate(Sum('sum_reg'))\
+    account_sum_list = Document.objects.all() \
+        .values('account__name', 'currencie__name') \
+        .annotate(Sum('sum_reg')) \
         .filter(active=True)
     print(account_sum_list)
     context = {
         'data_list': account_sum_list
     }
 
-    return render(request, 'money/index.html',context)
+    return render(request, 'money/index.html', context)
 
 
 class DocumentList(ListView):
@@ -32,6 +34,7 @@ class DocumentList(ListView):
 
 def show_doc(request, doc_id):
     doc = get_object_or_404(Document, pk=doc_id)
+
     doc_type = doc.type
     is_save = False
     if request.method == 'POST':
@@ -42,13 +45,14 @@ def show_doc(request, doc_id):
             form = CreditDocForm(request.POST)
 
         if form.is_valid():
+            print(form.cleaned_data)
             try:
                 doc.date = form.cleaned_data.get('date')
                 doc.sum = form.cleaned_data.get('sum')
                 doc.sum_reg = form.cleaned_data.get('sum') * (-1)
                 doc.counterparty = form.cleaned_data.get('counterparty')
                 doc.category = form.cleaned_data.get('category')
-                doc.сurrencie = form.cleaned_data.get('сurrencie')
+                doc.currencie = form.cleaned_data.get('currencie')
                 doc.account = form.cleaned_data.get('account')
                 doc.active = form.cleaned_data.get('active')
                 doc.comment = form.cleaned_data.get('comment')
@@ -69,7 +73,7 @@ def show_doc(request, doc_id):
         form.fields["sum_reg"].initial = doc.sum_reg
         form.fields["counterparty"].initial = doc.counterparty
         form.fields["category"].initial = doc.category
-        form.fields["сurrencie"].initial = doc.сurrencie
+        form.fields["currencie"].initial = doc.currencie
         form.fields["account"].initial = doc.account
         form.fields["active"].initial = doc.active
         form.fields["comment"].initial = doc.comment
@@ -96,7 +100,7 @@ def add_debit_doc(request):
                 print(str(e))
     else:
         form = DebitDocForm()
-        form.fields["date"].initial = datetime.datetime.now()
+        form.fields["date"].initial = timezone.now().date()
 
     context = {
         'form': form
@@ -118,12 +122,13 @@ def add_credit_doc(request):
                 print(str(e))
     else:
         form = CreditDocForm()
-        form.fields["date"].initial = datetime.datetime.now()
+        form.fields["date"].initial = timezone.now().date()
 
     context = {
         'form': form
     }
     return render(request, 'money/add_credit.html', context)
+
 
 def delete_doc(request, doc_id):
     try:
@@ -133,3 +138,15 @@ def delete_doc(request, doc_id):
     except:
         print('Ошибка удаления документа')
     return render(request)
+
+
+def directories(request):
+    return render(request, 'money/directories.html')
+
+
+class CounterpartyList(ListView):
+    template_name = 'money/counterpartys.html'
+
+    def get_queryset(self, **kwargs):
+        return Counterparty.objects.all()
+
