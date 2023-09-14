@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 
 from django.views.generic import ListView, CreateView
 
-from .forms import DocumentForm, DebitDocForm, CreditDocForm
+from .forms import ExchangeRatesForm, DebitDocForm, CreditDocForm
 from .models import *
 from datetime import datetime, timedelta
 from django.utils import timezone
@@ -155,3 +155,18 @@ class CounterpartyList(ListView):
     def get_queryset(self, **kwargs):
         return Counterparty.objects.all()
 
+class ExchangeRatesList(ListView):
+    template_name = 'money/exchangerates.html'
+
+    def get_queryset(self, **kwargs):
+        return ExchangeRates.objects.all()
+
+class AddExchangeRates(DataMixin, CreateView):
+    form_class = ExchangeRatesForm
+    template_name = 'money/add_rate.html'
+    success_url = reverse_lazy('rates_list')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context()
+        return dict(list(context.items()) + list(c_def.items()))

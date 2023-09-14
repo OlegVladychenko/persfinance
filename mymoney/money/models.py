@@ -71,4 +71,4 @@ class ExchangeRates(models.Model):
     currencie = models.ForeignKey('Currencies', on_delete=models.PROTECT)
     date = models.DateField()
     value = models.DecimalField('value', null=False,max_digits=10, decimal_places=5,default=0)
-    multiplicity = models.IntegerField()
+    multiplicity = models.IntegerField(blank=True,default=0)

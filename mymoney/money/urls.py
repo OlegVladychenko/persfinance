@@ -11,6 +11,10 @@ urlpatterns = [
     path('delete_doc/<int:doc_id>/', delete_doc, name='delete_doc'),
     path('dirs', directories, name='dirs'),
     path('ctr_list', CounterpartyList.as_view(), name='ctr_list'),
+    path('rates_list', ExchangeRatesList.as_view(), name='rates_list'),
+    path('add_rate', AddExchangeRates.as_view(), name='add_rate'),
+
+
 
 
 
