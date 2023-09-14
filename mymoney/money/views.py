@@ -56,6 +56,7 @@ def show_doc(request, doc_id):
                 doc.account = form.cleaned_data.get('account')
                 doc.active = form.cleaned_data.get('active')
                 doc.comment = form.cleaned_data.get('comment')
+                doc.sum_reg_val = form.cleaned_data.get('sum') * (-1)
 
                 doc.save()
                 is_save = True
@@ -77,6 +78,8 @@ def show_doc(request, doc_id):
         form.fields["account"].initial = doc.account
         form.fields["active"].initial = doc.active
         form.fields["comment"].initial = doc.comment
+        form.fields["sum_reg_val"].initial = doc.sum_reg_val
+
 
     context = {
         'doc_id': doc_id,
@@ -93,6 +96,7 @@ def add_debit_doc(request):
             try:
                 form.cleaned_data["type"] = 1
                 form.cleaned_data["sum_reg"] = form.cleaned_data["sum"]
+                form.cleaned_data["sum_reg_val"] = form.cleaned_data.get('sum')
                 Document.objects.create(**form.cleaned_data)
                 return redirect('docs')
             except Exception as e:
@@ -115,6 +119,7 @@ def add_credit_doc(request):
             try:
                 form.cleaned_data["type"] = 2
                 form.cleaned_data["sum_reg"] = form.cleaned_data["sum"] * (-1)
+                form.cleaned_data["sum_reg_val"] = form.cleaned_data.get('sum') * (-1)
                 Document.objects.create(**form.cleaned_data)
                 return redirect('docs')
             except Exception as e:

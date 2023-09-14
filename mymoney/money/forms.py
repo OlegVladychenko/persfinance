@@ -33,6 +33,7 @@ class DebitDocForm(forms.Form):
     type = forms.IntegerField(required=False)
     sum = forms.DecimalField(widget=forms.TextInput(attrs={'class': 'form-control'}), label="Сумма")
     sum_reg = forms.DecimalField(widget=forms.TextInput(attrs={'class': 'form-control'}),required=False)
+    sum_reg_val = forms.DecimalField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=False)
 
     counterparty = forms.ModelChoiceField(
         label="Контрагент",
@@ -67,6 +68,7 @@ class CreditDocForm(forms.Form):
     type = forms.IntegerField(required=False)
     sum = forms.DecimalField(widget=forms.TextInput(attrs={'class': 'form-control'}), label="Сумма")
     sum_reg = forms.DecimalField(widget=forms.TextInput(attrs={'class': 'form-control'}),required=False)
+    sum_reg_val = forms.DecimalField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=False)
 
     counterparty = forms.ModelChoiceField(
         label="Контрагент",
