@@ -170,3 +170,20 @@ class AddExchangeRates(DataMixin, CreateView):
         context = super().get_context_data(**kwargs)
         c_def = self.get_user_context()
         return dict(list(context.items()) + list(c_def.items()))
+
+def show_rate(request, rate_id):
+    rate = get_object_or_404(ExchangeRates, pk=rate_id)
+    if request.method == 'POST':
+        form = ExchangeRatesForm(request.POST, instance=rate)
+        if form.is_valid():
+            form.save()
+            return redirect('rates_list')
+    else:
+        form = ExchangeRatesForm(instance=rate)
+
+    context = {
+            'rate_id': rate_id,
+            'form': form,
+            }
+    return render(request, 'money/rate.html', context)
+

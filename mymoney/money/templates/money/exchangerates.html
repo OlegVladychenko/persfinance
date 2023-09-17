@@ -16,7 +16,7 @@
 
         {% for m in exchangerates_list %}
         <tr>
-            <td><a href="">{{m.date|date:"Y-m-d"}} </a></td>
+            <td><a href="{% url 'show_rate' m.id %}">{{m.date|date:"Y-m-d"}} </a></td>
             <td>{{m.currencie}}</td>
             <td>{{m.value}}</td>
         </tr>
