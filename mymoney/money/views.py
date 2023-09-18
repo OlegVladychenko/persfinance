@@ -80,7 +80,6 @@ def show_doc(request, doc_id):
         form.fields["comment"].initial = doc.comment
         form.fields["sum_reg_val"].initial = doc.sum_reg_val
 
-
     context = {
         'doc_id': doc_id,
         'form': form,
@@ -155,11 +154,13 @@ class CounterpartyList(ListView):
     def get_queryset(self, **kwargs):
         return Counterparty.objects.all()
 
+
 class ExchangeRatesList(ListView):
     template_name = 'money/exchangerates.html'
 
     def get_queryset(self, **kwargs):
         return ExchangeRates.objects.all()
+
 
 class AddExchangeRates(DataMixin, CreateView):
     form_class = ExchangeRatesForm
@@ -170,6 +171,7 @@ class AddExchangeRates(DataMixin, CreateView):
         context = super().get_context_data(**kwargs)
         c_def = self.get_user_context()
         return dict(list(context.items()) + list(c_def.items()))
+
 
 def show_rate(request, rate_id):
     rate = get_object_or_404(ExchangeRates, pk=rate_id)
@@ -182,8 +184,17 @@ def show_rate(request, rate_id):
         form = ExchangeRatesForm(instance=rate)
 
     context = {
-            'rate_id': rate_id,
-            'form': form,
-            }
+        'rate_id': rate_id,
+        'form': form,
+    }
     return render(request, 'money/rate.html', context)
 
+
+def delete_rate(request, rate_id):
+    try:
+        instance = ExchangeRates.objects.get(id=rate_id)
+        instance.delete()
+        return redirect('rates_list')
+    except:
+        print('Ошибка удаления курса валют')
+    return render(request)

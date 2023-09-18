@@ -14,6 +14,7 @@ urlpatterns = [
     path('rates_list', ExchangeRatesList.as_view(), name='rates_list'),
     path('add_rate', AddExchangeRates.as_view(), name='add_rate'),
     path('show_rate/<int:rate_id>/', show_rate, name='show_rate'),
+    path('delete_rate/<int:rate_id>/', delete_rate, name='delete_rate'),
 
 
 
