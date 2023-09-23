@@ -1,7 +1,7 @@
 {% extends 'money/base.html' %}
 {% block content %}
 
-
+<h5>Расход</h5>
 <form action="{% url 'add_credit_doc' %}" method="post">
     {% csrf_token %}
 

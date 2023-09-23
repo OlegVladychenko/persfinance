@@ -36,13 +36,16 @@ def show_doc(request, doc_id):
     doc = get_object_or_404(Document, pk=doc_id)
 
     doc_type = doc.type
+    doc_name = ""
     is_save = False
     if request.method == 'POST':
         if doc_type == 1:
             form = DebitDocForm(request.POST)
+            doc_name = "Приход"
 
         elif doc_type == 2:
             form = CreditDocForm(request.POST)
+            doc_name = "Расход"
 
         if form.is_valid():
             print(form.cleaned_data)
@@ -67,8 +70,10 @@ def show_doc(request, doc_id):
 
         if doc_type == 1:
             form = DebitDocForm()
+            doc_name = "Приход"
         elif doc_type == 2:
             form = CreditDocForm()
+            doc_name = "Расход"
         form.fields["date"].initial = doc.date
         form.fields["sum"].initial = doc.sum
         form.fields["sum_reg"].initial = doc.sum_reg
@@ -83,6 +88,7 @@ def show_doc(request, doc_id):
     context = {
         'doc_id': doc_id,
         'form': form,
+        'doc_name': doc_name
     }
 
     return render(request, 'money/document.html', context)
