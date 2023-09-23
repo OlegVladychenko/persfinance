@@ -17,7 +17,6 @@ def index(request):
         .values('account__name', 'currencie__name') \
         .annotate(Sum('sum_reg')) \
         .filter(active=True)
-    print(account_sum_list)
     context = {
         'data_list': account_sum_list
     }
@@ -37,7 +36,6 @@ def show_doc(request, doc_id):
 
     doc_type = doc.type
     doc_name = ""
-    is_save = False
     if request.method == 'POST':
         if doc_type == 1:
             form = DebitDocForm(request.POST)
@@ -48,21 +46,25 @@ def show_doc(request, doc_id):
             doc_name = "Расход"
 
         if form.is_valid():
-            print(form.cleaned_data)
             try:
                 doc.date = form.cleaned_data.get('date')
                 doc.sum = form.cleaned_data.get('sum')
-                doc.sum_reg = form.cleaned_data.get('sum') * (-1)
+
                 doc.counterparty = form.cleaned_data.get('counterparty')
                 doc.category = form.cleaned_data.get('category')
                 doc.currencie = form.cleaned_data.get('currencie')
                 doc.account = form.cleaned_data.get('account')
                 doc.active = form.cleaned_data.get('active')
                 doc.comment = form.cleaned_data.get('comment')
-                doc.sum_reg_val = form.cleaned_data.get('sum') * (-1)
-
+                reg_sum = get_regulated_sum(doc.date, doc.currencie, doc.sum)
+                if doc_type == 1:
+                    doc.sum_reg_val = reg_sum
+                    doc.sum_reg = form.cleaned_data.get('sum')
+                else:
+                    doc.sum_reg_val = reg_sum * (-1)
+                    doc.sum_reg = form.cleaned_data.get('sum') * (-1)
                 doc.save()
-                is_save = True
+
                 return redirect('docs')
             except:
                 form.add_error(None, 'Ошибка добавления')
@@ -101,7 +103,10 @@ def add_debit_doc(request):
             try:
                 form.cleaned_data["type"] = 1
                 form.cleaned_data["sum_reg"] = form.cleaned_data["sum"]
-                form.cleaned_data["sum_reg_val"] = form.cleaned_data.get('sum')
+                form.cleaned_data["sum_reg_val"] = get_regulated_sum(form.cleaned_data["date"],
+                                                                     form.cleaned_data["currencie"],
+                                                                     form.cleaned_data["sum"])
+
                 Document.objects.create(**form.cleaned_data)
                 return redirect('docs')
             except Exception as e:
@@ -124,7 +129,10 @@ def add_credit_doc(request):
             try:
                 form.cleaned_data["type"] = 2
                 form.cleaned_data["sum_reg"] = form.cleaned_data["sum"] * (-1)
-                form.cleaned_data["sum_reg_val"] = form.cleaned_data.get('sum') * (-1)
+                form.cleaned_data["sum_reg_val"] = get_regulated_sum(form.cleaned_data["date"],
+                                                                     form.cleaned_data["currencie"],
+                                                                     form.cleaned_data["sum"]) * (-1)
+
                 Document.objects.create(**form.cleaned_data)
                 return redirect('docs')
             except Exception as e:
