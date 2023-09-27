@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 
 from django.views.generic import ListView, CreateView
 
-from .forms import ExchangeRatesForm, DebitDocForm, CreditDocForm
+from .forms import ExchangeRatesForm, DebitDocForm, CreditDocForm, CounterpartyForm
 from .models import *
 from datetime import datetime, timedelta
 from django.utils import timezone
@@ -212,3 +212,39 @@ def delete_rate(request, rate_id):
     except:
         print('Ошибка удаления курса валют')
     return render(request)
+
+def show_counterparty(request, contr_id):
+    rate = get_object_or_404(Counterparty, pk=contr_id)
+    if request.method == 'POST':
+        form = CounterpartyForm(request.POST, instance=rate)
+        if form.is_valid():
+            form.save()
+            return redirect('ctr_list')
+    else:
+        form = CounterpartyForm(instance=rate)
+
+    context = {
+        'contr_id': contr_id,
+        'form': form,
+    }
+    return render(request, 'money/counterparty.html', context)
+
+def delete_counterparty(request, contr_id):
+    try:
+        instance = Counterparty.objects.get(id=contr_id)
+        instance.delete()
+        return redirect('ctr_list')
+    except:
+        print('Ошибка удаления курса валют')
+    return render(request)
+
+
+class AddCounterpartyForm(DataMixin, CreateView):
+    form_class = CounterpartyForm
+    template_name = 'money/add_counterparty.html'
+    success_url = reverse_lazy('ctr_list')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context()
+        return dict(list(context.items()) + list(c_def.items()))

@@ -15,6 +15,10 @@ urlpatterns = [
     path('add_rate', AddExchangeRates.as_view(), name='add_rate'),
     path('show_rate/<int:rate_id>/', show_rate, name='show_rate'),
     path('delete_rate/<int:rate_id>/', delete_rate, name='delete_rate'),
+    path('show_counterparty/<int:contr_id>/', show_counterparty, name='show_counterparty'),
+    path('delete_counterparty/<int:contr_id>/', delete_counterparty, name='delete_counterparty'),
+    path('add_counterparty', AddCounterpartyForm.as_view(), name='add_counterparty'),
+
 
 
 

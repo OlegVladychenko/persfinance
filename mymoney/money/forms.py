@@ -116,3 +116,16 @@ class ExchangeRatesForm(forms.ModelForm):
             'currencie': 'Валюта',
             'value': 'Курс',
         }
+
+class CounterpartyForm(forms.ModelForm):
+    class Meta:
+        model = Counterparty
+        fields = "__all__"
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'comment': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+        labels = {
+            'name': 'Наименование',
+            'comment': 'Комментарий',
+        }
