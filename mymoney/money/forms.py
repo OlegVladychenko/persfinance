@@ -123,9 +123,26 @@ class CounterpartyForm(forms.ModelForm):
         fields = "__all__"
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
-            'comment': forms.TextInput(attrs={'class': 'form-control'}),
+            'comment': forms.Textarea(attrs={'cols': 10, 'rows': 4, 'class': 'form-control'}),
         }
         labels = {
             'name': 'Наименование',
             'comment': 'Комментарий',
         }
+
+class CurrencieForm(forms.ModelForm):
+    class Meta:
+        model = Currencies
+        fields = "__all__"
+        widgets = {
+            'code': forms.TextInput(attrs={'class': 'form-control'}),
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'full_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'comment': forms.Textarea(attrs={'cols': 10, 'rows': 4, 'class': 'form-control'}),
+        }
+        labels = {
+            'name': 'Наименование',
+            'full_name': 'Наименование полное',
+            'comment': 'Комментарий',
+        }
+

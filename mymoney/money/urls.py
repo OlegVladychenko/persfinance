@@ -18,9 +18,10 @@ urlpatterns = [
     path('show_counterparty/<int:contr_id>/', show_counterparty, name='show_counterparty'),
     path('delete_counterparty/<int:contr_id>/', delete_counterparty, name='delete_counterparty'),
     path('add_counterparty', AddCounterpartyForm.as_view(), name='add_counterparty'),
-
-
-
+    path('add_currencie', AddCurrencieForm.as_view(), name='add_currencie'),
+    path('cur_list', CurrenciesList.as_view(), name='cur_list'),
+    path('delete_currencie/<slug:curr_id>/', delete_currencie, name='delete_currencie'),
+    path('show_currencie/<slug:curr_id>/', show_currencie, name='show_currencie'),
 
 
 

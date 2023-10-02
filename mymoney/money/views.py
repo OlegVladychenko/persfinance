@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 
 from django.views.generic import ListView, CreateView
 
-from .forms import ExchangeRatesForm, DebitDocForm, CreditDocForm, CounterpartyForm
+from .forms import ExchangeRatesForm, DebitDocForm, CreditDocForm, CounterpartyForm, CurrencieForm
 from .models import *
 from datetime import datetime, timedelta
 from django.utils import timezone
@@ -213,6 +213,7 @@ def delete_rate(request, rate_id):
         print('Ошибка удаления курса валют')
     return render(request)
 
+
 def show_counterparty(request, contr_id):
     rate = get_object_or_404(Counterparty, pk=contr_id)
     if request.method == 'POST':
@@ -228,6 +229,7 @@ def show_counterparty(request, contr_id):
         'form': form,
     }
     return render(request, 'money/counterparty.html', context)
+
 
 def delete_counterparty(request, contr_id):
     try:
@@ -248,3 +250,48 @@ class AddCounterpartyForm(DataMixin, CreateView):
         context = super().get_context_data(**kwargs)
         c_def = self.get_user_context()
         return dict(list(context.items()) + list(c_def.items()))
+
+
+class AddCurrencieForm(DataMixin, CreateView):
+    form_class = CurrencieForm
+    template_name = 'money/add_currencie.html'
+    success_url = reverse_lazy('cur_list')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context()
+        return dict(list(context.items()) + list(c_def.items()))
+
+
+class CurrenciesList(ListView):
+    template_name = 'money/currencies.html'
+
+    def get_queryset(self, **kwargs):
+        return Currencies.objects.all()
+
+
+def delete_currencie(request, curr_id):
+    try:
+        instance = Currencies.objects.get(code=curr_id)
+        instance.delete()
+        return redirect('cur_list')
+    except:
+        print('Ошибка удаления валюты')
+    return render(request)
+
+
+def show_currencie(request, curr_id):
+    rate = get_object_or_404(Currencies, code=curr_id)
+    if request.method == 'POST':
+        form = CurrencieForm(request.POST, instance=rate)
+        if form.is_valid():
+            form.save()
+            return redirect('cur_list')
+    else:
+        form = CurrencieForm(instance=rate)
+
+    context = {
+        'curr_id': curr_id,
+        'form': form,
+    }
+    return render(request, 'money/currencie.html', context)
