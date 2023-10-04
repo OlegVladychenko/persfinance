@@ -22,7 +22,10 @@ urlpatterns = [
     path('cur_list', CurrenciesList.as_view(), name='cur_list'),
     path('delete_currencie/<slug:curr_id>/', delete_currencie, name='delete_currencie'),
     path('show_currencie/<slug:curr_id>/', show_currencie, name='show_currencie'),
-
+    path('category_list', CategoryList.as_view(), name='category_list'),
+    path('add_category', AddCategoryForm.as_view(), name='add_category'),
+    path('show_category/<int:category_id>/', show_rate, name='show_category'),
+    path('delete_category/<int:category_id>/', delete_category, name='delete_category'),
 
 
 ]

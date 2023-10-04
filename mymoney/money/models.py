@@ -27,7 +27,7 @@ class Counterparty(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=255)
-    comment = models.CharField(max_length=255, blank=True, null=True)
+    comment = models.CharField(max_length=255, blank=True)
 
     def __str__(self):
         return self.name

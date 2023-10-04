@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 
 from django.views.generic import ListView, CreateView
 
-from .forms import ExchangeRatesForm, DebitDocForm, CreditDocForm, CounterpartyForm, CurrencieForm
+from .forms import ExchangeRatesForm, DebitDocForm, CreditDocForm, CounterpartyForm, CurrencieForm, CategoryForm
 from .models import *
 from datetime import datetime, timedelta
 from django.utils import timezone
@@ -295,3 +295,44 @@ def show_currencie(request, curr_id):
         'form': form,
     }
     return render(request, 'money/currencie.html', context)
+
+class CategoryList(ListView):
+    template_name = 'money/categorys.html'
+
+    def get_queryset(self, **kwargs):
+        return Category.objects.all()
+
+class AddCategoryForm(DataMixin, CreateView):
+    form_class = CategoryForm
+    template_name = 'money/add_category.html'
+    success_url = reverse_lazy('category_list')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context()
+        return dict(list(context.items()) + list(c_def.items()))
+
+def show_category(request, category_id):
+    rate = get_object_or_404(Category, pk=category_id)
+    if request.method == 'POST':
+        form = CategoryForm(request.POST, instance=rate)
+        if form.is_valid():
+            form.save()
+            return redirect('category_list')
+    else:
+        form = CategoryForm(instance=rate)
+
+    context = {
+        'category_id': category_id,
+        'form': form,
+    }
+    return render(request, 'money/category.html', context)
+
+def delete_category(request, category_id):
+    try:
+        instance = Category.objects.get(pk=category_id)
+        instance.delete()
+        return redirect('category_list')
+    except:
+        print('Ошибка удаления категории')
+    return render(request)
