@@ -26,6 +26,7 @@ urlpatterns = [
     path('add_category', AddCategoryForm.as_view(), name='add_category'),
     path('show_category/<int:category_id>/', show_rate, name='show_category'),
     path('delete_category/<int:category_id>/', delete_category, name='delete_category'),
+    path('monacn_list', MoneyAccountList.as_view(), name='monacn_list'),
 
 
 ]

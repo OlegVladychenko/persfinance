@@ -296,11 +296,13 @@ def show_currencie(request, curr_id):
     }
     return render(request, 'money/currencie.html', context)
 
+
 class CategoryList(ListView):
     template_name = 'money/categorys.html'
 
     def get_queryset(self, **kwargs):
         return Category.objects.all()
+
 
 class AddCategoryForm(DataMixin, CreateView):
     form_class = CategoryForm
@@ -311,6 +313,7 @@ class AddCategoryForm(DataMixin, CreateView):
         context = super().get_context_data(**kwargs)
         c_def = self.get_user_context()
         return dict(list(context.items()) + list(c_def.items()))
+
 
 def show_category(request, category_id):
     rate = get_object_or_404(Category, pk=category_id)
@@ -328,6 +331,7 @@ def show_category(request, category_id):
     }
     return render(request, 'money/category.html', context)
 
+
 def delete_category(request, category_id):
     try:
         instance = Category.objects.get(pk=category_id)
@@ -336,3 +340,9 @@ def delete_category(request, category_id):
     except:
         print('Ошибка удаления категории')
     return render(request)
+
+class MoneyAccountList(ListView):
+    template_name = 'money/moneyaccounts.html'
+
+    def get_queryset(self, **kwargs):
+        return MoneyAccount.objects.all()
