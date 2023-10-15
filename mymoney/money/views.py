@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 
 from django.views.generic import ListView, CreateView
 
-from .forms import ExchangeRatesForm, DebitDocForm, CreditDocForm, CounterpartyForm, CurrencieForm, CategoryForm
+from .forms import ExchangeRatesForm, DebitDocForm, CreditDocForm, CounterpartyForm, CurrencieForm, CategoryForm, MoneyAccountForm
 from .models import *
 from datetime import datetime, timedelta
 from django.utils import timezone
@@ -346,3 +346,38 @@ class MoneyAccountList(ListView):
 
     def get_queryset(self, **kwargs):
         return MoneyAccount.objects.all()
+
+class AddMoneyAccount(DataMixin, CreateView):
+    form_class = MoneyAccountForm
+    template_name = 'money/add_moneyaccount.html'
+    success_url = reverse_lazy('monacn_list')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context()
+        return dict(list(context.items()) + list(c_def.items()))
+
+def show_money_account(request, monacc_id):
+    money_account = get_object_or_404(MoneyAccount, pk=monacc_id)
+    if request.method == 'POST':
+        form = MoneyAccountForm(request.POST, instance=money_account)
+        if form.is_valid():
+            form.save()
+            return redirect('monacn_list')
+    else:
+        form = MoneyAccountForm(instance=money_account)
+
+    context = {
+        'monacc_id': monacc_id,
+        'form': form,
+    }
+    return render(request, 'money/moneyaccount.html', context)
+
+def delete_monacc(request, monacc_id):
+    try:
+        instance = MoneyAccount.objects.get(pk=monacc_id)
+        instance.delete()
+        return redirect('monacn_list')
+    except:
+        print('Ошибка удаления аккаунт')
+    return render(request)

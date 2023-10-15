@@ -159,3 +159,17 @@ class CategoryForm(forms.ModelForm):
             'comment': 'Комментарий',
         }
 
+class MoneyAccountForm(forms.ModelForm):
+    class Meta:
+        model = MoneyAccount
+        fields = "__all__"
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'currencie': forms.Select(attrs={'class': 'form-select'}),
+            'comment': forms.Textarea(attrs={'cols': 10, 'rows': 4, 'class': 'form-control'}),
+        }
+        labels = {
+            'name': 'Наименование',
+            'currencie': 'Валюта',
+            'comment': 'Комментарий',
+        }

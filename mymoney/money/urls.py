@@ -27,6 +27,7 @@ urlpatterns = [
     path('show_category/<int:category_id>/', show_rate, name='show_category'),
     path('delete_category/<int:category_id>/', delete_category, name='delete_category'),
     path('monacn_list', MoneyAccountList.as_view(), name='monacn_list'),
-
-
+    path('add_monacc', AddMoneyAccount.as_view(), name='add_monacc'),
+    path('show_monacc/<int:monacc_id>/', show_money_account, name='show_monacc'),
+    path('delete_monacc/<int:monacc_id>/', delete_monacc, name='delete_monacc'),
 ]

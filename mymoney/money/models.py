@@ -60,7 +60,7 @@ class TypeCredit(models.Model):
 
 class MoneyAccount(models.Model):
     name = models.CharField(max_length=255)
-    type = models.IntegerField()  # 0- cash 1- Bank account
+    type = models.IntegerField(default=1, blank=True, null=True)  # 0- cash 1- Bank account
     currencie = models.ForeignKey('Currencies', on_delete=models.PROTECT)
     comment = models.CharField(max_length=255, blank=True, null=True)
 
@@ -70,5 +70,5 @@ class MoneyAccount(models.Model):
 class ExchangeRates(models.Model):
     currencie = models.ForeignKey('Currencies', on_delete=models.PROTECT)
     date = models.DateField()
-    value = models.DecimalField('value', null=False,max_digits=10, decimal_places=5,default=0)
-    multiplicity = models.IntegerField(blank=True,default=0)
+    value = models.DecimalField('value', null=False, max_digits=10, decimal_places=5,default=0)
+    multiplicity = models.IntegerField(blank=True, default=0)
