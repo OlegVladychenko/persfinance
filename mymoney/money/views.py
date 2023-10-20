@@ -28,7 +28,7 @@ class DocumentList(ListView):
     template_name = 'money/documents.html'
 
     def get_queryset(self, **kwargs):
-        return Document.objects.all()
+        return Document.objects.all().order_by('-id')
 
 
 def show_doc(request, doc_id):

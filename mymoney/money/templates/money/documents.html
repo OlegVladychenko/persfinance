@@ -10,10 +10,10 @@
         <tr>
             <th scope="col">ID</th>
             <th scope="col">Date</th>
-            <th scope="col">Валюта</th>
             <th scope="col">Счет/касса</th>
             <th scope="col">Контрагент</th>
             <th scope="col">Сумма</th>
+            <th scope="col">Валюта</th>
         </tr>
         </thead>
         <tbody>
@@ -29,10 +29,14 @@
                 <a href="{% url 'show_doc' m.id %}">{{m.id}} </a></td>
             <td>{{m.date|date:"Y-m-d"}}</td>
 
-            <td>{{m.currencie}}</td>
             <td>{{m.account}}</td>
-             <td>{{m.counterparty}}</td>
-            <td>{{m.sum_reg}}</td>
+            <td>{{m.counterparty}}</td>
+            {% if m.sum_reg < 0 %}
+            <td style="color:red;">{{m.sum_reg}}</td>
+            {% else %}
+            <td style="color:limegreen;">{{m.sum_reg}}</td>
+            {% endif %}
+            <td>{{m.currencie}}</td>
         </tr>
         {% endfor %}
 
