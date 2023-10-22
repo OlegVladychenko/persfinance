@@ -5,7 +5,8 @@ from django.urls import reverse_lazy
 
 from django.views.generic import ListView, CreateView
 
-from .forms import ExchangeRatesForm, DebitDocForm, CreditDocForm, CounterpartyForm, CurrencieForm, CategoryForm, MoneyAccountForm
+from .forms import ExchangeRatesForm, DebitDocForm, CreditDocForm, CounterpartyForm, CurrencieForm, CategoryForm, \
+    MoneyAccountForm
 from .models import *
 from datetime import datetime, timedelta
 from django.utils import timezone
@@ -49,10 +50,10 @@ def show_doc(request, doc_id):
             try:
                 doc.date = form.cleaned_data.get('date')
                 doc.sum = form.cleaned_data.get('sum')
-
+                currencie = get_object_or_404(MoneyAccount, pk=form.cleaned_data["account"].id).currencie
+                doc.currencie = currencie
                 doc.counterparty = form.cleaned_data.get('counterparty')
                 doc.category = form.cleaned_data.get('category')
-                doc.currencie = form.cleaned_data.get('currencie')
                 doc.account = form.cleaned_data.get('account')
                 doc.active = form.cleaned_data.get('active')
                 doc.comment = form.cleaned_data.get('comment')
@@ -81,7 +82,6 @@ def show_doc(request, doc_id):
         form.fields["sum_reg"].initial = doc.sum_reg
         form.fields["counterparty"].initial = doc.counterparty
         form.fields["category"].initial = doc.category
-        form.fields["currencie"].initial = doc.currencie
         form.fields["account"].initial = doc.account
         form.fields["active"].initial = doc.active
         form.fields["comment"].initial = doc.comment
@@ -101,13 +101,17 @@ def add_debit_doc(request):
         form = DebitDocForm(request.POST)
         if form.is_valid():
             try:
+                currencie = get_object_or_404(MoneyAccount, pk=form.cleaned_data["account"].id).currencie
+
                 form.cleaned_data["type"] = 1
                 form.cleaned_data["sum_reg"] = form.cleaned_data["sum"]
                 form.cleaned_data["sum_reg_val"] = get_regulated_sum(form.cleaned_data["date"],
-                                                                     form.cleaned_data["currencie"],
+                                                                     currencie,
                                                                      form.cleaned_data["sum"])
+                new_doc = Document(**form.cleaned_data)
+                new_doc.currencie = currencie
+                new_doc.save()
 
-                Document.objects.create(**form.cleaned_data)
                 return redirect('docs')
             except Exception as e:
                 form.add_error(None, str(e))
@@ -127,13 +131,16 @@ def add_credit_doc(request):
         form = CreditDocForm(request.POST)
         if form.is_valid():
             try:
+                currencie = get_object_or_404(MoneyAccount, pk=form.cleaned_data["account"].id).currencie
                 form.cleaned_data["type"] = 2
                 form.cleaned_data["sum_reg"] = form.cleaned_data["sum"] * (-1)
                 form.cleaned_data["sum_reg_val"] = get_regulated_sum(form.cleaned_data["date"],
-                                                                     form.cleaned_data["currencie"],
+                                                                     currencie,
                                                                      form.cleaned_data["sum"]) * (-1)
 
-                Document.objects.create(**form.cleaned_data)
+                new_doc = Document(**form.cleaned_data)
+                new_doc.currencie = currencie
+                new_doc.save()
                 return redirect('docs')
             except Exception as e:
                 form.add_error(None, str(e))
@@ -341,11 +348,13 @@ def delete_category(request, category_id):
         print('Ошибка удаления категории')
     return render(request)
 
+
 class MoneyAccountList(ListView):
     template_name = 'money/moneyaccounts.html'
 
     def get_queryset(self, **kwargs):
         return MoneyAccount.objects.all()
+
 
 class AddMoneyAccount(DataMixin, CreateView):
     form_class = MoneyAccountForm
@@ -356,6 +365,7 @@ class AddMoneyAccount(DataMixin, CreateView):
         context = super().get_context_data(**kwargs)
         c_def = self.get_user_context()
         return dict(list(context.items()) + list(c_def.items()))
+
 
 def show_money_account(request, monacc_id):
     money_account = get_object_or_404(MoneyAccount, pk=monacc_id)
@@ -372,6 +382,7 @@ def show_money_account(request, monacc_id):
         'form': form,
     }
     return render(request, 'money/moneyaccount.html', context)
+
 
 def delete_monacc(request, monacc_id):
     try:

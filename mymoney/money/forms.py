@@ -47,12 +47,6 @@ class DebitDocForm(forms.Form):
         widget=forms.Select(attrs={'class': 'form-select'})
     )
 
-    currencie = forms.ModelChoiceField(
-        label="Валюта",
-        queryset=Currencies.objects.all(),
-        widget=forms.Select(attrs={'class': 'form-select'})
-    )
-
     account = forms.ModelChoiceField(
         label="Счет/Касса",
         queryset=MoneyAccount.objects.all(),
@@ -81,12 +75,6 @@ class CreditDocForm(forms.Form):
     category = forms.ModelChoiceField(
         label="Категория",
         queryset=Category.objects.all(),
-        widget=forms.Select(attrs={'class': 'form-select'})
-    )
-
-    currencie = forms.ModelChoiceField(
-        label="Валюта",
-        queryset=Currencies.objects.all(),
         widget=forms.Select(attrs={'class': 'form-select'})
     )
 
