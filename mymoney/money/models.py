@@ -16,6 +16,11 @@ class Document(models.Model):
     account = models.ForeignKey('MoneyAccount', on_delete=models.PROTECT, blank=True)
     sum_reg_val = models.DecimalField(max_digits=10, decimal_places=2)
 
+    class Meta:
+        indexes = [
+            models.Index(fields=['-date'])
+        ]
+
 
 class Counterparty(models.Model):
     name = models.CharField(max_length=255)
@@ -72,3 +77,8 @@ class ExchangeRates(models.Model):
     date = models.DateField()
     value = models.DecimalField('value', null=False, max_digits=10, decimal_places=5,default=0)
     multiplicity = models.IntegerField(blank=True, default=0)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['-date'])
+        ]
