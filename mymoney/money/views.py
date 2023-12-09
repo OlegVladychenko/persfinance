@@ -10,6 +10,8 @@ from .forms import ExchangeRatesForm, DebitDocForm, CreditDocForm, CounterpartyF
 from .models import *
 from datetime import datetime, timedelta
 from django.utils import timezone
+
+from .report_utils import get_colors
 from .utils import *
 
 
@@ -421,3 +423,40 @@ def report_dynamic_money(request):
         'rates': rates
     }
     return render(request, 'money/report_dynamic_money.html', context)
+
+
+def report_credit_category(request):
+    category = []
+    sums = []
+    colors = []
+    total = 0
+
+    if request.method == 'POST':
+        form = ReportForm(request.POST)
+        if form.is_valid():
+            start_date = form.cleaned_data.get('date_start')
+            end_date = form.cleaned_data.get('date_end')
+
+            rs_data = Document.objects.all() \
+                .values('category__name') \
+                .annotate(Sum('sum_reg_val')) \
+                .filter(active=True, type=2, date__range=(start_date, end_date)).exclude(category=5)
+
+            for x in rs_data:
+                total = total + (-x.get('sum_reg_val__sum'))
+                category.append(x.get('category__name'))
+                sums.append(str(-x.get('sum_reg_val__sum')))
+
+            colors = get_colors(len(category))
+
+    else:
+        form = ReportForm()
+
+    context = {
+        'form': form,
+        'managers': category,
+        'percents': sums,
+        'colors': colors,
+        'total': total,
+    }
+    return render(request, 'money/report_credit_category.html', context)
