@@ -6,7 +6,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView
 
 from .forms import ExchangeRatesForm, DebitDocForm, CreditDocForm, CounterpartyForm, CurrencieForm, CategoryForm, \
-    MoneyAccountForm
+    MoneyAccountForm, ReportForm
 from .models import *
 from datetime import datetime, timedelta
 from django.utils import timezone
@@ -392,3 +392,32 @@ def delete_monacc(request, monacc_id):
     except:
         print('Ошибка удаления аккаунт')
     return render(request)
+#REPORTS
+
+def reports(request):
+    return render(request, 'money/reports.html')
+
+def report_dynamic_money(request):
+    dates = []
+    rates = []
+
+    if request.method == 'POST':
+        form = ReportForm(request.POST)
+        if form.is_valid():
+            start_date = form.cleaned_data.get('date_start')
+            end_date = form.cleaned_data.get('date_end')
+
+            rs_documents = Document.objects.filter(active=True, date__range=(start_date, end_date)).order_by('date')
+            for x in rs_documents:
+                dates.append(x.date.strftime("%Y-%m-%d"))
+                rates.append(str(x.sum_reg))
+
+    else:
+        form = ReportForm()
+
+    context = {
+        'form': form,
+        'dates': dates,
+        'rates': rates
+    }
+    return render(request, 'money/report_dynamic_money.html', context)

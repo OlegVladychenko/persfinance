@@ -30,4 +30,8 @@ urlpatterns = [
     path('add_monacc', AddMoneyAccount.as_view(), name='add_monacc'),
     path('show_monacc/<int:monacc_id>/', show_money_account, name='show_monacc'),
     path('delete_monacc/<int:monacc_id>/', delete_monacc, name='delete_monacc'),
+    #reports
+    path('reports', reports, name='reports'),
+    path('report_dynamic_money', report_dynamic_money, name='report_dynamic_money'),
+
 ]

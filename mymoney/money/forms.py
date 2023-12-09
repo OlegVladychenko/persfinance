@@ -161,3 +161,13 @@ class MoneyAccountForm(forms.ModelForm):
             'currencie': 'Валюта',
             'comment': 'Комментарий',
         }
+class ReportForm(forms.Form):
+    date_start = forms.DateField(widget=DateInput)
+    date_end = forms.DateField(widget=DateInput)
+
+    #def __init__(self, *args, **kwargs):
+    #    list_param1 = kwargs.pop('listparam1', None)
+    #    super(ReportForm, self).__init__(*args, **kwargs)
+    #    if list_param1:
+    #        self.fields['listparam1'] = forms.CharField(label='Валюта',
+    #                                                    widget=forms.Select(choices=list_param1))
