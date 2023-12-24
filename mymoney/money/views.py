@@ -394,10 +394,13 @@ def delete_monacc(request, monacc_id):
     except:
         print('Ошибка удаления аккаунт')
     return render(request)
-#REPORTS
+
+
+# REPORTS
 
 def reports(request):
     return render(request, 'money/reports.html')
+
 
 def report_dynamic_money(request):
     dates = []
@@ -429,6 +432,7 @@ def report_credit_category(request):
     category = []
     sums = []
     colors = []
+    data_detail = []
     total = 0
 
     if request.method == 'POST':
@@ -438,14 +442,38 @@ def report_credit_category(request):
             end_date = form.cleaned_data.get('date_end')
 
             rs_data = Document.objects.all() \
-                .values('category__name') \
+                .values('category__name', 'category__id') \
                 .annotate(Sum('sum_reg_val')) \
-                .filter(active=True, type=2, date__range=(start_date, end_date)).exclude(category=5)
+                .filter(active=True, type=2, date__range=(start_date, end_date)) \
+                .exclude(category=5) \
+                .order_by('sum_reg_val__sum')
 
             for x in rs_data:
+                document_list = []
                 total = total + (-x.get('sum_reg_val__sum'))
                 category.append(x.get('category__name'))
                 sums.append(str(-x.get('sum_reg_val__sum')))
+                rs_document_list = Document.objects.all() \
+                    .filter(active=True, type=2, date__range=(start_date, end_date), category=x.get('category__id'))\
+                    .order_by('-id')
+                for a in rs_document_list:
+                    item_document = {
+                        'id': a.id,
+                        'date': a.date,
+                        'account': a.account,
+                        'counterparty': a.counterparty,
+                        'sum_reg': a.sum_reg,
+                        'currencie': a.currencie,
+                        'comment': a.comment,
+                    }
+                    document_list.append(item_document)
+
+                print(document_list)
+                item_data = {
+                    'caption': x.get('category__name') + "  " + str(-x.get('sum_reg_val__sum')),
+                    'documents': document_list,
+                }
+                data_detail.append(item_data)
 
             colors = get_colors(len(category))
 
@@ -457,6 +485,7 @@ def report_credit_category(request):
         'managers': category,
         'percents': sums,
         'colors': colors,
+        'data_detail': data_detail,
         'total': total,
     }
     return render(request, 'money/report_credit_category.html', context)
